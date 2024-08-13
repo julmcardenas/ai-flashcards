@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAi5NGcBrzpFD5F409Z_cwBnkL00aKT77g",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "ai-flashcards-90877.firebaseapp.com",
   projectId: "ai-flashcards-90877",
   storageBucket: "ai-flashcards-90877.appspot.com",
-  messagingSenderId: "1025259765321",
-  appId: "1:1025259765321:web:80c9d3f2063c937cd84998"
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 // Initialize Firebase

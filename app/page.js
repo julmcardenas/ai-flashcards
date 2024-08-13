@@ -42,7 +42,7 @@ export default function Home() {
       <Box textAlign={'center'} sx={{ my: 4 }}>
         <Typography variant="h2"> Welcome to AI Flashcards </Typography>
         <Typography variant="h5"> Easiest way to make flashcards from your text</Typography>
-        <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/generate">
           Get Started
         </Button>
       </Box>
