@@ -1,5 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { AppBar, Button, Toolbar, Typography, Container, Box, Grid } from "@mui/material";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,8 +14,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <AppBar>
+            <Toolbar>
+              <Link href="/" passHref legacyBehavior>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>AI Flashcards</Typography>
+              </Link>
+              <SignedOut>
+                <Button color="inherit" href="/login">
+                  Login
+                </Button>
+                <Button color="inherit" href="/signup">
+                  Sign Up
+                </Button>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </Toolbar>
+          </AppBar>
+          <Toolbar />
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
