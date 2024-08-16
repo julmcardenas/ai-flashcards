@@ -7,12 +7,13 @@ import Head from "next/head";
 
 export default function Home() {
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (plan) => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
         origin: 'http://localhost:3000',
       },
+      body: JSON.stringify({ plan })
     })
 
     const checkoutSessionJson = await checkoutSession.json()
@@ -133,8 +134,8 @@ export default function Home() {
       <h2 className="text-3xl font-semibold text-gray-800">Pricing</h2>
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
         {[
-          { title: 'Basic', price: '$5 / month', description: 'Access to basic flashcards features and limited storage', onClick: () => {} },
-          { title: 'Pro', price: '$10 / month', description: 'Unlimited flashcards and storage, with priority support.', onClick: () => {handleSubmit()} },
+          { title: 'Basic', price: '$5 / month', description: 'Access to basic flashcards features and limited storage', onClick: () => {handleSubmit('BASIC')} },
+          { title: 'Pro', price: '$10 / month', description: 'Unlimited flashcards and storage, with priority support.', onClick: () => {handleSubmit('PRO')} },
         ].map((plan, index) => (
           <div key={index} className="border border-gray-200 p-8 rounded-lg shadow-lg">
             <h3 className="text-2xl font-medium text-gray-900 mb-2">

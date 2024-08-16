@@ -33,7 +33,6 @@ export default function Flashcards() {
         router.push(`/flashcard?id=${id}`) // 
     }
 
-    console.log('flashcards', flashcards)
     return (
         <div className="">
             <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mx-8" onClick={() => router.back()}>Back</button>

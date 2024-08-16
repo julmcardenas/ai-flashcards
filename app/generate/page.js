@@ -2,7 +2,7 @@
 
 import { usersRef, db } from "@/firebase";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { doc, writeBatch, getDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 
@@ -49,7 +49,11 @@ export default function GeneratePage() {
     }
 
     const saveFlashcards = async () => {
-        if (!name) {
+        if (!user) {
+            // redirect('/login')
+            alert('Please login to save flashcards');
+            return;
+        } else if (!name) {
             alert('Please enter a name for the flashcards');
             return;
         }
@@ -80,6 +84,10 @@ export default function GeneratePage() {
         await batch.commit()
         handleClose()
         router.push('/flashcards')
+    }
+
+    if (isLoaded && !user) {
+        redirect('/login')
     }
 
     return (
