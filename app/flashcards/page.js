@@ -35,20 +35,23 @@ export default function Flashcards() {
 
     console.log('flashcards', flashcards)
     return (
-        <Container>
-            <Grid container spacing={3} sx={{ mt: 4 }}>
+        <div className="">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mx-8" onClick={() => router.back()}>Back</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4 mx-8">
                 {flashcards.map((flashcard, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Card>
-                            <CardActionArea onClick={() => handleCardClick(flashcard.name)}>
-                                <CardContent>
-                                    <Typography variant="h6">{flashcard.name}</Typography>
-                                </CardContent>
-                            </CardActionArea>
-                        </Card>
-                    </Grid>
+                    <div
+                        key={index}
+                        className="relative group cursor-pointer "
+                        onClick={() => handleCardClick(flashcard.name)}
+                    >
+                        <div className="relative h-52 w-full">
+                            <div className="absolute inset-0 flex items-center justify-center bg-white text-lg font-medium p-4 rounded-lg shadow-lg hover:border-2 hover:border-blue-500">
+                                <h2 className="text-4xl">{flashcard.name}</h2>
+                            </div>
+                        </div>
+                    </div>
                 ))}
-            </Grid>
-        </Container>
+            </div>
+        </div>
     )
 }
