@@ -18,20 +18,35 @@ export default function GeneratePage() {
 
     const handleSubmit = async (e) => {
         setCardsLoading(true);
-        fetch('api/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: text
-        })
-            .then((res) => res.json())
-            .then(data => {
-                setFlashcards(data);
-            }).finally(() => {
-                setCardsLoading(false);
-            })
-    }
+        try {
+            const res = await fetch('api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text }) // Ensure the body is sent as a JSON object
+            });
+    
+            // Check if the response is OK (status code 200-299)
+            if (!res.ok) {
+                throw new Error('Failed to generate flashcards. Please try again.');
+            }
+    
+            // Attempt to parse the response as JSON
+            const data = await res.json().catch(() => {
+                // Handle the case where the response is not JSON
+                throw new Error('Invalid response format. Expected JSON.');
+            });
+    
+            // Set the flashcards if data is successfully parsed
+            setFlashcards(data);
+        } catch (error) {
+            console.error('Error generating flashcards:', error.message);
+            alert('An error occurred while generating flashcards. Please try again.');
+        } finally {
+            setCardsLoading(false);
+        }
+    };
 
     const handleCardClick = (id) => {
         setFlipped((prev) => ({
