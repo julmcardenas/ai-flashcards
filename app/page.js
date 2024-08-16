@@ -7,12 +7,13 @@ import Head from "next/head";
 
 export default function Home() {
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (plan) => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
         origin: 'http://localhost:3000',
       },
+      body: JSON.stringify({ plan })
     })
 
     const checkoutSessionJson = await checkoutSession.json()
@@ -73,7 +74,7 @@ export default function Home() {
               <Typography variant="h5"> Basic</Typography>
               <Typography variant="h6"> $5 / month</Typography>
               <Typography> Access to basic flashcards features and limited storage </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>Choose Basic</Button>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={()=> handleSubmit('BASIC')}>Choose Basic</Button>
             </Box>
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
@@ -81,7 +82,7 @@ export default function Home() {
               <Typography variant="h5"> Pro</Typography>
               <Typography variant="h6"> $10 / month</Typography>
               <Typography> Unlimited flashcards and storage, with priority support. </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>Choose Pro</Button>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleSubmit('PRO')}>Choose Pro</Button>
             </Box>
           </Grid>
         </Grid>

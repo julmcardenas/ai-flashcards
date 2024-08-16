@@ -11,8 +11,12 @@ export async function GET(req, { params }) {
   const sessionId = searchParams.get('sessionId');
 
   try {
-    const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
-    return NextResponse.json(checkoutSession, { status: 200 });
+    if (sessionId) {
+      const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
+      return NextResponse.json(checkoutSession, { status: 200 });
+    }
+    return NextResponse.json({message: 'No session ID'}, { status: 200 });
+
   } catch (e) {
     console.error('Error retrieving checkout session:', e);
     return NextResponse.json(e, { status: 500 });
@@ -20,6 +24,9 @@ export async function GET(req, { params }) {
 }
 
 export async function POST(req) {
+  const data = await req.json();
+  console.log('body', data.plan)
+  const plan = data.plan;
   const params = {
     mode: 'subscription',
     payment_method_types: ['card'],
@@ -28,9 +35,9 @@ export async function POST(req) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'Pro Subscription'
+            name: plan === 'PRO' ? 'Pro Subscription' : 'Basic Subscription',
           },
-          unit_amount: formatAmountForStripe(10),
+          unit_amount: plan === 'PRO' ? formatAmountForStripe(10) : formatAmountForStripe(5),
           recurring: {
             interval: 'month',
             interval_count: 1

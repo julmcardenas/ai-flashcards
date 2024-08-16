@@ -1,10 +1,11 @@
 'use client'
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import getStripe from "@/utils/get-stripe"
 import { useSearchParams } from "next/navigation"
 import { CircularProgress } from "@mui/material"
-import { Container, Typography, Box } from "@mui/material"
+import { Container, Typography, Box, Button } from "@mui/material"
+import { red } from "@mui/material/colors"
 
 export default function Result() {
     const router = useRouter()
@@ -55,6 +56,10 @@ export default function Result() {
             </Container>
         )
     }
+    
+    // if (!session) {
+    //     redirect('/')
+    // }
 
     return (
         <Container sx={{ textAlign: 'center', mt: 4 }}>
@@ -76,6 +81,7 @@ export default function Result() {
                         <Typography variant="body1">
                             Your payment was not successful. Please try again.
                         </Typography>
+                        <Button variant="contained" color="primary" sx={{ mt: 2 }} href='/'>Go To Home</Button>
                     </Box>
                 </>
             )}

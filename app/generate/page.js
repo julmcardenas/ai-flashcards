@@ -2,7 +2,7 @@
 
 import { usersRef, db } from "@/firebase";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { doc, writeBatch, getDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Box, Button, Card, CardActionArea, CardContent, Container, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Grid, Paper, TextField, Typography } from "@mui/material";
@@ -15,6 +15,8 @@ export default function GeneratePage() {
     const [name, setName] = useState('');
     const [open, setOpen] = useState(false);
     const router = useRouter();
+
+    console.log(user)
 
     const handleSubmit = async (e) => {
         fetch('api/generate', {
@@ -46,7 +48,9 @@ export default function GeneratePage() {
     }
 
     const saveFlashcards = async () => {
-        if (!name) {
+        if (!user) {
+            redirect('/login')
+        } else if (!name) {
             alert('Please enter a name for the flashcards');
             return;
         }
@@ -77,6 +81,10 @@ export default function GeneratePage() {
         await batch.commit()
         handleClose()
         router.push('/flashcards')
+    }
+
+    if (!user) {
+        redirect('/login')
     }
 
     return (
