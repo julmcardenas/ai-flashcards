@@ -25,7 +25,6 @@ export async function GET(req, { params }) {
 
 export async function POST(req) {
   const data = await req.json();
-  console.log('body', data.plan)
   const plan = data.plan;
   const params = {
     mode: 'subscription',
