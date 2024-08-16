@@ -49,7 +49,9 @@ export default function GeneratePage() {
 
     const saveFlashcards = async () => {
         if (!user) {
-            redirect('/login')
+            // redirect('/login')
+            alert('Please login to save flashcards');
+            return;
         } else if (!name) {
             alert('Please enter a name for the flashcards');
             return;
@@ -83,7 +85,7 @@ export default function GeneratePage() {
         router.push('/flashcards')
     }
 
-    if (!user) {
+    if (isLoaded && !user) {
         redirect('/login')
     }
 
