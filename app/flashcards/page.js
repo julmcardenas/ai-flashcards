@@ -1,37 +1,39 @@
 'use client'
+
 import { useUser } from "@clerk/nextjs"
-import { Box, Button, Card, CardActionArea, CardContent, Container, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Grid, Paper, TextField, Typography } from "@mui/material";
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { db, usersRef } from "@/firebase"
-import { doc, getDoc, collection, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
+import { useRouter } from "next/navigation"
+import { usersRef } from "@/firebase"
 
 export default function Flashcards() {
-    const { isLoaded, isSignedIn, user } = useUser()
-    const [flashcards, setFlashcards] = useState([])
-    const router = useRouter()
+    const { isLoaded, isSignedIn, user } = useUser();
+    const [flashcards, setFlashcards] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         async function getFlashcards() {
-            if (!user) return
-            const docRef = doc(usersRef, user.id)
-            const docSnap = await getDoc(docRef)
+            if (!user) return;
+            const docRef = doc(usersRef, user.id);
+            const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                const collections = docSnap.data().flashcards || []
-                setFlashcards(collections)
+                const collections = docSnap.data().flashcards || [];
+                setFlashcards(collections);
             } else {
-                await setDoc(docRef, { flashcards: [] })
+                await setDoc(docRef, { flashcards: [] });
             }
         }
-        getFlashcards()
-    }, [user])
+        getFlashcards();
+    }, [user]);
 
-    if (!isLoaded || !isSignedIn) { return <>Loading...</> }
+    if (!isLoaded || !isSignedIn) {
+        return <>Loading...</>;
+    }
 
     const handleCardClick = (id) => {
-        router.push(`/flashcard?id=${id}`) // 
-    }
+        router.push(`/flashcard?id=${id}`); 
+    };
 
     return (
         <div className="">
@@ -40,7 +42,7 @@ export default function Flashcards() {
                 {flashcards.map((flashcard, index) => (
                     <div
                         key={index}
-                        className="relative group cursor-pointer "
+                        className="relative group cursor-pointer"
                         onClick={() => handleCardClick(flashcard.name)}
                     >
                         <div className="relative h-52 w-full">
@@ -52,5 +54,5 @@ export default function Flashcards() {
                 ))}
             </div>
         </div>
-    )
+    );
 }
