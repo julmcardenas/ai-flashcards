@@ -14,12 +14,12 @@ export default function Carousel({ flashcards, flipped, handleCardClick, handleR
     return (
         <div className="relative w-full overflow-hidden">
             <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                {flashcards.map((flashcard, index) => (
+                {flashcards.map((flashcard) => (
                     <div key={flashcard.id} className="w-full flex-shrink-0 cursor-pointer" onClick={() => handleCardClick(flashcard.id)}>
-                        <div className={`flex min-h-64 px-16 bg-white border rounded-lg shadow-lg items-center justify-center text-lg font-medium ${flipped[flashcard.id] ? 'bg-gray-100' : 'bg-gray-200'} `}>
-                            {flipped[flashcard.id] ? flashcard.back : flashcard.front}
-                        </div>
-                        {flipped[flashcard.id] && (
+                        <div className="relative">
+                            <div className={`flex min-h-64 px-16 bg-white border rounded-lg shadow-lg items-center justify-center text-lg font-medium ${flipped[flashcard.id] ? 'bg-gray-100' : 'bg-gray-200'} `}>
+                                {flipped[flashcard.id] ? flashcard.back : flashcard.front}
+                            </div>
                             <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-4">
                                 <button
                                     onClick={(e) => {
@@ -49,7 +49,7 @@ export default function Carousel({ flashcards, flipped, handleCardClick, handleR
                                     Hard
                                 </button>
                             </div>
-                        )}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -78,4 +78,4 @@ export default function Carousel({ flashcards, flipped, handleCardClick, handleR
             </div>
         </div>
     );
-};
+}
