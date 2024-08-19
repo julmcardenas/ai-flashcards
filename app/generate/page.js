@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { usersRef, db } from "@/firebase";
 import { useUser } from "@clerk/nextjs";
@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 export default function GeneratePage() {
     const { isLoaded, isSignedIn, user } = useUser();
     const [flashcards, setFlashcards] = useState([]);
-    const [flipped, setFlipped] = useState([]);
+    const [flipped, setFlipped] = useState({});
     const [text, setText] = useState('');
     const [name, setName] = useState('');
     const [open, setOpen] = useState(false);
@@ -38,24 +38,26 @@ export default function GeneratePage() {
     const handleMaterialClick = async (material) => {
         setSelectedMaterial(material);
         setText(material.text);
-        setSummary('');  // Clear summary
-        setFlashcards([]);  // Clear flashcards
-        setFlipped({});  // Clear flipped state
-    
-        // Check if the material has existing flashcards or summary
+        setSummary('');
+        setFlashcards([]);
+        setFlipped({});
+
         const docRef = doc(usersRef, user.id);
         const docSnap = await getDoc(docRef);
-    
+
         if (docSnap.exists()) {
             const data = docSnap.data();
-            
-            // Here is where you should apply the change
             const materialsArray = data.materials || [];
             const storedMaterial = materialsArray.find(m => m.name === material.name);
-    
+
             if (storedMaterial) {
                 if (storedMaterial.flashcards) {
                     setFlashcards(storedMaterial.flashcards);
+                    const flippedState = {};
+                    storedMaterial.flashcards.forEach((card) => {
+                        flippedState[card.id] = false;
+                    });
+                    setFlipped(flippedState);
                 }
                 if (storedMaterial.summary) {
                     setSummary(storedMaterial.summary);
@@ -63,7 +65,6 @@ export default function GeneratePage() {
             }
         }
     };
-    
 
     const handleAddMaterial = () => {
         if (name) {
@@ -90,6 +91,11 @@ export default function GeneratePage() {
 
             const data = await res.json();
             setFlashcards(data);
+            const flippedState = {};
+            data.forEach((card) => {
+                flippedState[card.id] = false;
+            });
+            setFlipped(flippedState);
         } catch (error) {
             console.error('Error generating flashcards:', error.message);
             alert('An error occurred while generating flashcards. Please try again.');
@@ -130,52 +136,82 @@ export default function GeneratePage() {
 
     const saveFlashcards = async () => {
         if (!user) {
-            alert('Please login to save flashcards');
-            return;
-        } else if (!name && !selectedMaterial) {
-            alert('Please enter a name for the flashcards');
+            alert('Please log in to save flashcards.');
             return;
         }
-
-        const materialName = name || selectedMaterial.name;
-
-        const batch = writeBatch(db);
-        const userDocsRef = doc(usersRef, user.id);
-        const docSnap = await getDoc(userDocsRef);
-
-        let materialsData = [];
-        if (docSnap.exists()) {
-            materialsData = docSnap.data().materials || [];
+    
+        // Ensure `materialName` is defined
+        const materialName = name || (selectedMaterial && selectedMaterial.name);
+    
+        if (!materialName) {
+            alert('Material name is missing. Please enter a name for the flashcards.');
+            return;
         }
-
-        const existingMaterialIndex = materialsData.findIndex(m => m.name === materialName);
-        if (existingMaterialIndex !== -1) {
-            materialsData[existingMaterialIndex] = {
-                name: materialName,
-                text,
-                flashcards,
-                summary
-            };
-        } else {
-            materialsData.push({ name: materialName, text, flashcards, summary });
+    
+        // Ensure `user.id` is defined
+        if (!user.id) {
+            alert('User ID is missing. Please check your authentication.');
+            return;
         }
-
-        batch.set(userDocsRef, { materials: materialsData }, { merge: true });
-
-        const collectionRef = collection(userDocsRef, materialName);
-        flashcards.forEach((flashcard) => {
-            const cardDocRef = doc(collectionRef, flashcard.id); // Use flashcard.id as document ID
-            batch.set(cardDocRef, flashcard);
-        });
-
-        await batch.commit();
-        handleClose();
-        router.push('/flashcards');
+    
+        try {
+            const userDocsRef = doc(usersRef, user.id);
+            if (!userDocsRef) {
+                alert('User reference is missing. Please check your Firebase setup.');
+                return;
+            }
+    
+            const batch = writeBatch(db);
+            const docSnap = await getDoc(userDocsRef);
+    
+            let materialsData = [];
+            if (docSnap.exists()) {
+                materialsData = docSnap.data().materials || [];
+            }
+    
+            // Update or add the material
+            const existingMaterialIndex = materialsData.findIndex(m => m.name === materialName);
+            if (existingMaterialIndex !== -1) {
+                materialsData[existingMaterialIndex] = {
+                    name: materialName,
+                    text,
+                    flashcards,
+                    summary
+                };
+            } else {
+                materialsData.push({ name: materialName, text, flashcards, summary });
+            }
+    
+            batch.set(userDocsRef, { materials: materialsData }, { merge: true });
+    
+            if (flashcards.length > 0) {
+                const collectionRef = collection(userDocsRef, materialName);
+                flashcards.forEach((flashcard) => {
+                    if (flashcard.id) {
+                        const cardDocRef = doc(collectionRef, flashcard.id);
+                        batch.set(cardDocRef, flashcard);
+                    } else {
+                        console.error('Flashcard ID is missing. Skipping flashcard:', flashcard);
+                    }
+                });
+            }
+    
+            await batch.commit();
+            handleClose();
+            router.push('/flashcards');
+        } catch (error) {
+            console.error('Error saving flashcards:', error);
+            alert('An error occurred while saving flashcards. Please try again.');
+        }
     };
+        
 
-    if (isLoaded && !user) {
-        redirect('/login');
-    }
+    const handleCardClick = (index) => {
+        setFlipped((prevFlipped) => ({
+            ...prevFlipped,
+            [index]: !prevFlipped[index]  // Toggle the flipped state for the clicked card
+        }));
+    };
 
     return (
         <div className="container mx-auto px-4 py-3 flex">
@@ -257,13 +293,8 @@ export default function GeneratePage() {
                                             onClick={() => handleCardClick(index)}
                                         >
                                             <div className="absolute inset-0 flex items-center justify-center bg-white text-lg font-medium p-4 rounded-lg shadow-lg hover:border-2 hover:border-blue-500">
-                                                {flashcard.front}
+                                                {flipped[index] ? flashcard.back : flashcard.front}
                                             </div>
-                                            {flipped[index] ? (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-lg font-medium p-4 rounded-lg shadow-lg">
-                                                    {flashcard.back}
-                                                </div>
-                                            ) : null}
                                         </div>
                                     ))}
                                 </div>
@@ -312,5 +343,5 @@ export default function GeneratePage() {
                 </div>
             )}
         </div>
-    )
+    );
 }

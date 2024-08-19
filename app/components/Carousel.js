@@ -20,35 +20,37 @@ export default function Carousel({ flashcards, flipped, handleCardClick, handleR
                             <div className={`flex min-h-64 px-16 bg-white border rounded-lg shadow-lg items-center justify-center text-lg font-medium ${flipped[flashcard.id] ? 'bg-gray-100' : 'bg-gray-200'} `}>
                                 {flipped[flashcard.id] ? flashcard.back : flashcard.front}
                             </div>
-                            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-4">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleRate(1, flashcard.id);
-                                    }}
-                                    className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 1 ? 'bg-blue-500 text-white hover:bg-blue-400' : 'bg-white text-blue-500 hover:bg-gray-100'}`}
-                                >
-                                    Easy
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleRate(2, flashcard.id);
-                                    }}
-                                    className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 2 ? 'bg-yellow-500 text-white hover:bg-yellow-400' : 'bg-white text-yellow-500 hover:bg-gray-100'}`}
-                                >
-                                    Medium
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleRate(3, flashcard.id);
-                                    }}
-                                    className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 3 ? 'bg-red-500 text-white hover:bg-red-400' : 'bg-white text-red-500 hover:bg-gray-100'}`}
-                                >
-                                    Hard
-                                </button>
-                            </div>
+                            {flipped[flashcard.id] && ( // Only show the rating buttons when the card is flipped
+                                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-4">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent the flip action
+                                            handleRate(1, flashcard.id);
+                                        }}
+                                        className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 1 ? 'bg-blue-500 text-white hover:bg-blue-400' : 'bg-white text-blue-500 hover:bg-gray-100'}`}
+                                    >
+                                        Easy
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent the flip action
+                                            handleRate(2, flashcard.id);
+                                        }}
+                                        className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 2 ? 'bg-yellow-500 text-white hover:bg-yellow-400' : 'bg-white text-yellow-500 hover:bg-gray-100'}`}
+                                    >
+                                        Medium
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent the flip action
+                                            handleRate(3, flashcard.id);
+                                        }}
+                                        className={`px-4 py-2 border rounded ${ratings[flashcard.id] === 3 ? 'bg-red-500 text-white hover:bg-red-400' : 'bg-white text-red-500 hover:bg-gray-100'}`}
+                                    >
+                                        Hard
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

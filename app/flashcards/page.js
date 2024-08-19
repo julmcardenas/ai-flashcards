@@ -13,18 +13,25 @@ export default function Flashcards() {
 
     useEffect(() => {
         async function getFlashcards() {
-            if (!user) return;
-
-            const docRef = doc(usersRef, user.id);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const collections = docSnap.data().materials || [];
-                setFlashcards(collections);
+            if (!user || !user.id) return;
+    
+            try {
+                const docRef = doc(usersRef, user.id);
+                const docSnap = await getDoc(docRef);
+    
+                if (docSnap.exists()) {
+                    const collections = docSnap.data().materials || [];
+                    setFlashcards(collections);
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching flashcards:", error);
             }
         }
         getFlashcards();
     }, [user]);
+    
 
     if (!isLoaded || !isSignedIn) {
         return <>Loading...</>;
@@ -55,3 +62,4 @@ export default function Flashcards() {
         </div>
     );
 }
+
