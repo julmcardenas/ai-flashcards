@@ -1,12 +1,11 @@
 'use client'
 
-import { useUser } from "@clerk/nextjs"
-import { useEffect, useState } from "react"
-import { db, usersRef } from "@/firebase"
-import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore"
-import { Button } from "@mui/material";
-import { useSearchParams, useRouter } from "next/navigation"
-import Carousel from "../components/Carousel"
+import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
+import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore";
+import { useRouter, useSearchParams } from "next/navigation";
+import Carousel from "../components/Carousel";
+import { usersRef } from "@/firebase";
 
 export default function Flashcard() {
     const router = useRouter();
@@ -34,11 +33,11 @@ export default function Flashcard() {
             const flippedState = {};
             const ratingsState = {};
             flashcards.forEach(card => {
-                flippedState[card.id] = false;
+                flippedState[card.id] = false; // All cards start unflipped
                 ratingsState[card.id] = card.rating || null;
             });
-            setFlipped(flippedState);
-            setRatings(ratingsState);
+            setFlipped(flippedState); // Set the flipped state
+            setRatings(ratingsState); // Set the ratings state
         }
         getFlashcard();
     }, [user, search]);
@@ -51,7 +50,6 @@ export default function Flashcard() {
     };
 
     const handleRate = async (difficulty, flashcardId) => {
-        console.log(difficulty, flashcardId, user.id);
         const flashcardDoc = doc(usersRef, user.id, search, flashcardId);
         await updateDoc(flashcardDoc, { rating: difficulty });
 
