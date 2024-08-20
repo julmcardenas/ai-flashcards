@@ -22,7 +22,8 @@ return in the following json format:
   "flashcards": 
   [{
     "front": string,
-    "back": string
+    "back": string,
+    "id": unique ID
   }]
 }   
 `;
