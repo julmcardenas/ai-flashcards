@@ -1,43 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-
-
-
 # AI Flashcards
 
 AI Flashcards is a Next.js application designed to enhance learning through the use of AI-generated flashcards and summaries. Users can register, log in, and create flashcards from their own materials, rate their difficulty, and save them for future review. The project also includes subscription management with Stripe and is deployed on Vercel.
@@ -49,6 +9,7 @@ AI Flashcards is a Next.js application designed to enhance learning through the 
 - **Flashcard Management**: Users can save flashcards, rate their difficulty, and revisit them at any time.
 - **Subscription Plans**: Integrated with Stripe to offer two subscription options.
 - **Deployed on Vercel**: Easily accessible and scalable with Vercel.
+- **Styling with Tailwind CSS**: Utilized Tailwind CSS for custom and responsive styling.
 
 ## Technologies Used
 
@@ -57,6 +18,7 @@ AI Flashcards is a Next.js application designed to enhance learning through the 
 - **Firebase**: Used for storing user information and materials.
 - **OpenAI API**: Powers the flashcard and summary generation.
 - **Stripe**: Manages subscription plans.
+- **Tailwind CSS**: Used for styling the application.
 - **Vercel**: Platform for deployment.
 
 ## Installation and Setup
@@ -75,3 +37,65 @@ AI Flashcards is a Next.js application designed to enhance learning through the 
    ```bash
    git clone https://github.com/julmcardenas/ai-flashcards.git
    cd ai-flashcards
+2. **Install Dependencies:**
+
+   ```bash
+   npm install
+
+3. **Firebase Set Up:**
+
+- Create a new Firebase project in the Firebase Console.
+- Create collections for users and materials to store user information and their uploaded materials.
+- Update the Firebase configuration in the .env.local file:
+
+   ```bash
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+4. **Clerk Setup:**
+
+- Create a Clerk account and set up your application.
+- Add the Clerk credentials to the .env.local file:
+
+  ```bash
+  NEXT_PUBLIC_CLERK_FRONTEND_API=your_clerk_frontend_api
+  CLERK_API_KEY=your_clerk_api_key
+
+5. **Stripe Set Up:**
+
+- Set up a Stripe account and create two subscription plans.
+- Add your Stripe credentials to the .env.local file:
+
+   ```bash
+   NEXT_PUBLIC_STRIPE_PUBLIC_KEY=your_stripe_public_key
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+
+6. **Run the development server:**
+   
+   ```bash
+   npm run dev
+   
+Now you can Open http://localhost:3000 with your browser to see the result.
+
+### Firebase Data Structure
+
+- Users Collection: Stores user documents with authentication details.
+- Materials Collection: Stores materials uploaded by users, including the flashcards generated.
+
+### Deployment
+
+The project is deployed on Vercel. If you want to deploy your own version:
+
+- Create a Vercel account at vercel.com.
+- Import the project from your GitHub repository.
+- Set up the environment variables for Firebase in Vercel.
+- Deploy the project.
+
+### Contributing
+
+Feel free to open issues or submit pull requests for new features or bug fixes.
+
