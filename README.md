@@ -95,7 +95,7 @@ The project is deployed on Vercel. If you want to deploy your own version:
 - Set up the environment variables for Firebase in Vercel.
 - Deploy the project.
 
-### Contributing
+## Contributing
 
 Feel free to open issues or submit pull requests for new features or bug fixes.
 
